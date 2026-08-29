@@ -1,0 +1,2990 @@
+{
+  "manifest_schema_version": 3,
+  "sdk_version": "5.13.0",
+  "app_id": "google-meet-connector",
+  "version": "0.1.0",
+  "name": "Google Meet Connector",
+  "description": "Connect your own Google account to create and manage Google Meet spaces, review conference records (participants, sessions), recordings and transcripts (Workspace Business/Enterprise plans), and create Calendar events with an automatic Meet link.",
+  "icon": "icon.svg",
+  "actions_explicit": true,
+  "system": false,
+  "capabilities": [
+    "google-meet:read",
+    "google-meet:write"
+  ],
+  "tools": [
+    {
+      "name": "list_connections",
+      "description": "List the connected Google accounts and whether each still works.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "MeetAccount": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "account_id": {
+                "title": "Account Id",
+                "type": "string"
+              },
+              "email": {
+                "title": "Email",
+                "type": "string"
+              },
+              "is_active": {
+                "title": "Is Active",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "account_id",
+              "email",
+              "is_active"
+            ],
+            "title": "MeetAccount",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "accounts": {
+            "items": {
+              "$ref": "#/$defs/MeetAccount"
+            },
+            "title": "Accounts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "accounts"
+        ],
+        "title": "AccountList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "disconnect_account",
+      "description": "Disconnect a Google account from Google Meet. Nothing in Google is changed; this only removes Imperal's saved token.",
+      "action_type": "destructive",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account_id": {
+            "description": "Connected Google account id to remove from Imperal.",
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "DisconnectParams",
+        "type": "object"
+      },
+      "return_schema": {},
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "switch_account",
+      "description": "Change the active Google account used by default for subsequent calls.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "email": {
+            "description": "Email of the connected Google account to make active/default.",
+            "title": "Email",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "title": "ActivateAccountParams",
+        "type": "object"
+      },
+      "return_schema": {},
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "create_space",
+      "description": "Create a new Google Meet space -- a reusable meeting room with a stable link, not a one-off calendar event.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "access_type": {
+            "default": "TRUSTED",
+            "description": "Who can join without knocking: OPEN, TRUSTED, or RESTRICTED.",
+            "title": "Access Type",
+            "type": "string"
+          }
+        },
+        "title": "CreateSpaceParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "space_name": {
+            "title": "Space Name",
+            "type": "string"
+          },
+          "meeting_uri": {
+            "title": "Meeting Uri",
+            "type": "string"
+          },
+          "meeting_code": {
+            "title": "Meeting Code",
+            "type": "string"
+          },
+          "access_type": {
+            "title": "Access Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "space_name",
+          "meeting_uri",
+          "meeting_code",
+          "access_type"
+        ],
+        "title": "MeetSpace",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "get_space",
+      "description": "Read one Google Meet space in full by its resource name.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "space_name": {
+            "description": "Meet space resource name, e.g. 'spaces/abcd-efgh-ijk'.",
+            "title": "Space Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "space_name"
+        ],
+        "title": "SpaceIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "space_name": {
+            "title": "Space Name",
+            "type": "string"
+          },
+          "meeting_uri": {
+            "title": "Meeting Uri",
+            "type": "string"
+          },
+          "meeting_code": {
+            "title": "Meeting Code",
+            "type": "string"
+          },
+          "access_type": {
+            "title": "Access Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "space_name",
+          "meeting_uri",
+          "meeting_code",
+          "access_type"
+        ],
+        "title": "MeetSpace",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "update_space_config",
+      "description": "Update a Meet space's access type (who can join without knocking).",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "space_name": {
+            "description": "Meet space resource name, e.g. 'spaces/abcd-efgh-ijk'.",
+            "title": "Space Name",
+            "type": "string"
+          },
+          "access_type": {
+            "default": "",
+            "description": "New access type: OPEN, TRUSTED, or RESTRICTED. Omit to leave unchanged.",
+            "title": "Access Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "space_name"
+        ],
+        "title": "UpdateSpaceConfigParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "space_name": {
+            "title": "Space Name",
+            "type": "string"
+          },
+          "meeting_uri": {
+            "title": "Meeting Uri",
+            "type": "string"
+          },
+          "meeting_code": {
+            "title": "Meeting Code",
+            "type": "string"
+          },
+          "access_type": {
+            "title": "Access Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "space_name",
+          "meeting_uri",
+          "meeting_code",
+          "access_type"
+        ],
+        "title": "MeetSpace",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "end_active_conference",
+      "description": "End the currently active conference in a Meet space, if one is running.",
+      "action_type": "destructive",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "space_name": {
+            "description": "Meet space resource name, e.g. 'spaces/abcd-efgh-ijk'.",
+            "title": "Space Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "space_name"
+        ],
+        "title": "EndActiveConferenceParams",
+        "type": "object"
+      },
+      "return_schema": {},
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "list_conference_records",
+      "description": "List conference records (past/ongoing meetings), optionally filtered to one space.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "space_name": {
+            "default": "",
+            "description": "Optional Meet space resource name to filter by, e.g. 'spaces/abcd-efgh-ijk'.",
+            "title": "Space Name",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max conference records to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListConferenceRecordsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "ConferenceRecord": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "conference_record_name": {
+                "title": "Conference Record Name",
+                "type": "string"
+              },
+              "space_name": {
+                "title": "Space Name",
+                "type": "string"
+              },
+              "start_time": {
+                "title": "Start Time",
+                "type": "string"
+              },
+              "end_time": {
+                "title": "End Time",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "conference_record_name",
+              "space_name",
+              "start_time",
+              "end_time"
+            ],
+            "title": "ConferenceRecord",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/$defs/ConferenceRecord"
+            },
+            "title": "Records",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "records"
+        ],
+        "title": "ConferenceRecordList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "get_conference_record",
+      "description": "Read one conference record in full by its resource name.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "conference_record_name": {
+            "description": "Conference record resource name, e.g. 'conferenceRecords/abc123'.",
+            "title": "Conference Record Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "conference_record_name"
+        ],
+        "title": "ConferenceRecordIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "conference_record_name": {
+            "title": "Conference Record Name",
+            "type": "string"
+          },
+          "space_name": {
+            "title": "Space Name",
+            "type": "string"
+          },
+          "start_time": {
+            "title": "Start Time",
+            "type": "string"
+          },
+          "end_time": {
+            "title": "End Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "conference_record_name",
+          "space_name",
+          "start_time",
+          "end_time"
+        ],
+        "title": "ConferenceRecord",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "list_participants",
+      "description": "List participants who joined one conference record.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "conference_record_name": {
+            "description": "Conference record resource name, e.g. 'conferenceRecords/abc123'.",
+            "title": "Conference Record Name",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max participants to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "conference_record_name"
+        ],
+        "title": "ListParticipantsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Participant": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "participant_name": {
+                "title": "Participant Name",
+                "type": "string"
+              },
+              "display_name": {
+                "title": "Display Name",
+                "type": "string"
+              },
+              "earliest_start_time": {
+                "title": "Earliest Start Time",
+                "type": "string"
+              },
+              "latest_end_time": {
+                "title": "Latest End Time",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "participant_name",
+              "display_name",
+              "earliest_start_time",
+              "latest_end_time"
+            ],
+            "title": "Participant",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "participants": {
+            "items": {
+              "$ref": "#/$defs/Participant"
+            },
+            "title": "Participants",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "participants"
+        ],
+        "title": "ParticipantList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "list_participant_sessions",
+      "description": "List the individual join/leave sessions of one participant (a participant can rejoin several times).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "conference_record_name": {
+            "description": "Conference record resource name, e.g. 'conferenceRecords/abc123'.",
+            "title": "Conference Record Name",
+            "type": "string"
+          },
+          "participant_name": {
+            "description": "Participant resource name, e.g. 'conferenceRecords/abc123/participants/xyz'.",
+            "title": "Participant Name",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max participant sessions to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "conference_record_name",
+          "participant_name"
+        ],
+        "title": "ListParticipantSessionsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "ParticipantSession": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "session_name": {
+                "title": "Session Name",
+                "type": "string"
+              },
+              "start_time": {
+                "title": "Start Time",
+                "type": "string"
+              },
+              "end_time": {
+                "title": "End Time",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "session_name",
+              "start_time",
+              "end_time"
+            ],
+            "title": "ParticipantSession",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "sessions": {
+            "items": {
+              "$ref": "#/$defs/ParticipantSession"
+            },
+            "title": "Sessions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "sessions"
+        ],
+        "title": "ParticipantSessionList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "list_recordings",
+      "description": "List cloud recordings for one conference record (requires a Workspace plan with Meet recording enabled).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "conference_record_name": {
+            "description": "Conference record resource name, e.g. 'conferenceRecords/abc123'.",
+            "title": "Conference Record Name",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max recordings to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "conference_record_name"
+        ],
+        "title": "ListRecordingsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Recording": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "recording_name": {
+                "title": "Recording Name",
+                "type": "string"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "export_uri": {
+                "title": "Export Uri",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "recording_name",
+              "state",
+              "export_uri"
+            ],
+            "title": "Recording",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "recordings": {
+            "items": {
+              "$ref": "#/$defs/Recording"
+            },
+            "title": "Recordings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "recordings"
+        ],
+        "title": "RecordingList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "get_recording",
+      "description": "Read one cloud recording in full by its resource name.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "conference_record_name": {
+            "description": "Conference record resource name, e.g. 'conferenceRecords/abc123'.",
+            "title": "Conference Record Name",
+            "type": "string"
+          },
+          "recording_name": {
+            "description": "Recording resource name, e.g. 'conferenceRecords/abc123/recordings/xyz'.",
+            "title": "Recording Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "conference_record_name",
+          "recording_name"
+        ],
+        "title": "RecordingIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "recording_name": {
+            "title": "Recording Name",
+            "type": "string"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          },
+          "export_uri": {
+            "title": "Export Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "recording_name",
+          "state",
+          "export_uri"
+        ],
+        "title": "Recording",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "list_transcripts",
+      "description": "List transcripts for one conference record (requires a Workspace plan with Meet transcription enabled).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "conference_record_name": {
+            "description": "Conference record resource name, e.g. 'conferenceRecords/abc123'.",
+            "title": "Conference Record Name",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max transcripts to return (1-100).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "conference_record_name"
+        ],
+        "title": "ListTranscriptsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Transcript": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "transcript_name": {
+                "title": "Transcript Name",
+                "type": "string"
+              },
+              "state": {
+                "title": "State",
+                "type": "string"
+              },
+              "export_uri": {
+                "title": "Export Uri",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "transcript_name",
+              "state",
+              "export_uri"
+            ],
+            "title": "Transcript",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "transcripts": {
+            "items": {
+              "$ref": "#/$defs/Transcript"
+            },
+            "title": "Transcripts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "transcripts"
+        ],
+        "title": "TranscriptList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "get_transcript",
+      "description": "Read one transcript in full by its resource name.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "conference_record_name": {
+            "description": "Conference record resource name, e.g. 'conferenceRecords/abc123'.",
+            "title": "Conference Record Name",
+            "type": "string"
+          },
+          "transcript_name": {
+            "description": "Transcript resource name, e.g. 'conferenceRecords/abc123/transcripts/xyz'.",
+            "title": "Transcript Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "conference_record_name",
+          "transcript_name"
+        ],
+        "title": "TranscriptIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "transcript_name": {
+            "title": "Transcript Name",
+            "type": "string"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          },
+          "export_uri": {
+            "title": "Export Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "transcript_name",
+          "state",
+          "export_uri"
+        ],
+        "title": "Transcript",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "list_transcript_entries",
+      "description": "List individual spoken-line entries of one transcript.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "conference_record_name": {
+            "description": "Conference record resource name, e.g. 'conferenceRecords/abc123'.",
+            "title": "Conference Record Name",
+            "type": "string"
+          },
+          "transcript_name": {
+            "description": "Transcript resource name, e.g. 'conferenceRecords/abc123/transcripts/xyz'.",
+            "title": "Transcript Name",
+            "type": "string"
+          },
+          "limit": {
+            "default": 100,
+            "description": "Max transcript entries (spoken lines) to return (1-500).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "conference_record_name",
+          "transcript_name"
+        ],
+        "title": "ListTranscriptEntriesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "TranscriptEntry": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "entry_name": {
+                "title": "Entry Name",
+                "type": "string"
+              },
+              "participant_name": {
+                "title": "Participant Name",
+                "type": "string"
+              },
+              "text": {
+                "title": "Text",
+                "type": "string"
+              },
+              "start_time": {
+                "title": "Start Time",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "entry_name",
+              "participant_name",
+              "text",
+              "start_time"
+            ],
+            "title": "TranscriptEntry",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "entries": {
+            "items": {
+              "$ref": "#/$defs/TranscriptEntry"
+            },
+            "title": "Entries",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "entries"
+        ],
+        "title": "TranscriptEntryList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "create_calendar_meeting",
+      "description": "Create a Google Calendar event with an automatic Google Meet link attached -- the practical way to schedule a meeting without full Meet-API-only access.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "summary": {
+            "description": "Event title, e.g. 'Weekly sync'.",
+            "title": "Summary",
+            "type": "string"
+          },
+          "start_time": {
+            "description": "ISO 8601 start datetime, e.g. '2026-09-01T10:00:00+03:00'.",
+            "title": "Start Time",
+            "type": "string"
+          },
+          "end_time": {
+            "description": "ISO 8601 end datetime, e.g. '2026-09-01T10:30:00+03:00'.",
+            "title": "End Time",
+            "type": "string"
+          },
+          "attendee_emails": {
+            "description": "Attendee email addresses to invite.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Attendee Emails",
+            "type": "array"
+          },
+          "description": {
+            "default": "",
+            "description": "Optional event description.",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "summary",
+          "start_time",
+          "end_time"
+        ],
+        "title": "CreateCalendarMeetingParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "event_id": {
+            "title": "Event Id",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "meet_link": {
+            "title": "Meet Link",
+            "type": "string"
+          },
+          "start_time": {
+            "title": "Start Time",
+            "type": "string"
+          },
+          "end_time": {
+            "title": "End Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "event_id",
+          "summary",
+          "meet_link",
+          "start_time",
+          "end_time"
+        ],
+        "title": "CalendarMeeting",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "get_calendar_meeting",
+      "description": "Read one Calendar event (with its Meet link, if any) in full by its event id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "event_id": {
+            "description": "Google Calendar event id.",
+            "title": "Event Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "event_id"
+        ],
+        "title": "CalendarEventIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "event_id": {
+            "title": "Event Id",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "meet_link": {
+            "title": "Meet Link",
+            "type": "string"
+          },
+          "start_time": {
+            "title": "Start Time",
+            "type": "string"
+          },
+          "end_time": {
+            "title": "End Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "event_id",
+          "summary",
+          "meet_link",
+          "start_time",
+          "end_time"
+        ],
+        "title": "CalendarMeeting",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "cancel_calendar_meeting",
+      "description": "Cancel (delete) a Calendar event that has a Meet link attached.",
+      "action_type": "destructive",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          },
+          "event_id": {
+            "description": "Google Calendar event id.",
+            "title": "Event Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "event_id"
+        ],
+        "title": "CalendarEventIdParams",
+        "type": "object"
+      },
+      "return_schema": {},
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    },
+    {
+      "name": "audit_meet_usage",
+      "description": "Value-add report: one-glance snapshot of connected accounts and recent conference activity.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "account": {
+            "default": "",
+            "description": "Optional connected Google account email. Omit to use the active/only account.",
+            "title": "Account",
+            "type": "string"
+          }
+        },
+        "title": "AuditParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connected_accounts": {
+            "title": "Connected Accounts",
+            "type": "integer"
+          },
+          "recent_conference_count": {
+            "title": "Recent Conference Count",
+            "type": "integer"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "connected_accounts",
+          "recent_conference_count",
+          "notes"
+        ],
+        "title": "HealthAudit",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "google_meet"
+    }
+  ],
+  "signals": [],
+  "schedules": [],
+  "required_scopes": [],
+  "icon_size_bytes": 607,
+  "oauth": [
+    {
+      "provider": "google",
+      "collection": "google_meet_accounts",
+      "scopes": [
+        "openid",
+        "email",
+        "profile",
+        "https://www.googleapis.com/auth/meetings.space.created",
+        "https://www.googleapis.com/auth/meetings.space.readonly",
+        "https://www.googleapis.com/auth/calendar.events"
+      ],
+      "has_hook": false
+    }
+  ],
+  "lifecycle": {
+    "health_check": {
+      "interval_sec": 60
+    }
+  },
+  "secrets": [
+    {
+      "name": "google_client_id",
+      "description": "Google OAuth client ID for Google Meet Connector.",
+      "required": true,
+      "write_mode": "user",
+      "max_bytes": 4096,
+      "scope": "app"
+    },
+    {
+      "name": "google_client_secret",
+      "description": "Google OAuth client secret for Google Meet Connector.",
+      "required": true,
+      "write_mode": "user",
+      "max_bytes": 4096,
+      "scope": "app"
+    }
+  ],
+  "panels": [
+    {
+      "panel_id": "secrets",
+      "slot": "right",
+      "title": "Secrets",
+      "tree": {},
+      "icon": "KeyRound",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "meet_sidebar",
+      "slot": "left",
+      "title": "Google Meet",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "meet_settings",
+      "slot": "center",
+      "title": "Google Meet settings",
+      "tree": {},
+      "icon": "Settings",
+      "refresh": "manual",
+      "center_overlay": true
+    }
+  ]
+}
