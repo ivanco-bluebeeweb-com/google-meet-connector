@@ -1,0 +1,22 @@
+{
+  "audit_meet_usage": 40,
+  "cancel_calendar_meeting": 16,
+  "create_calendar_meeting": 16,
+  "create_space": 16,
+  "disconnect_account": 0,
+  "end_active_conference": 8,
+  "get_calendar_meeting": 8,
+  "get_conference_record": 8,
+  "get_recording": 8,
+  "get_space": 8,
+  "get_transcript": 8,
+  "list_conference_records": 8,
+  "list_connections": 0,
+  "list_participant_sessions": 8,
+  "list_participants": 8,
+  "list_recordings": 8,
+  "list_transcript_entries": 8,
+  "list_transcripts": 8,
+  "switch_account": 16,
+  "update_space_config": 16
+}
