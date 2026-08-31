@@ -105,16 +105,22 @@ class AuditParams(AccountRefParams):
 # ---- SDL entities ----
 
 class MeetAccount(sdl.Entity):
+    id: str = ""
+    title: str = ""
     account_id: str
     email: str
     is_active: bool
 
 
 class AccountList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     accounts: list[MeetAccount]
 
 
 class MeetSpace(sdl.Entity):
+    id: str = ""
+    title: str = ""
     space_name: str
     meeting_uri: str
     meeting_code: str
@@ -122,11 +128,15 @@ class MeetSpace(sdl.Entity):
 
 
 class ActiveConference(sdl.Entity):
+    id: str = ""
+    title: str = ""
     conference_record_name: str
     active: bool
 
 
 class ConferenceRecord(sdl.Entity):
+    id: str = ""
+    title: str = ""
     conference_record_name: str
     space_name: str
     start_time: str
@@ -134,10 +144,14 @@ class ConferenceRecord(sdl.Entity):
 
 
 class ConferenceRecordList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     records: list[ConferenceRecord]
 
 
 class Participant(sdl.Entity):
+    id: str = ""
+    title: str = ""
     participant_name: str
     display_name: str
     earliest_start_time: str
@@ -145,40 +159,56 @@ class Participant(sdl.Entity):
 
 
 class ParticipantList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     participants: list[Participant]
 
 
 class ParticipantSession(sdl.Entity):
+    id: str = ""
+    title: str = ""
     session_name: str
     start_time: str
     end_time: str
 
 
 class ParticipantSessionList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     sessions: list[ParticipantSession]
 
 
 class Recording(sdl.Entity):
+    id: str = ""
+    title: str = ""
     recording_name: str
     state: str
     export_uri: str
 
 
 class RecordingList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     recordings: list[Recording]
 
 
 class Transcript(sdl.Entity):
+    id: str = ""
+    title: str = ""
     transcript_name: str
     state: str
     export_uri: str
 
 
 class TranscriptList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     transcripts: list[Transcript]
 
 
 class TranscriptEntry(sdl.Entity):
+    id: str = ""
+    title: str = ""
     entry_name: str
     participant_name: str
     text: str
@@ -186,10 +216,14 @@ class TranscriptEntry(sdl.Entity):
 
 
 class TranscriptEntryList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     entries: list[TranscriptEntry]
 
 
 class CalendarMeeting(sdl.Entity):
+    id: str = ""
+    title: str = ""
     event_id: str
     summary: str
     meet_link: str
@@ -198,11 +232,15 @@ class CalendarMeeting(sdl.Entity):
 
 
 class HealthAudit(sdl.Entity):
+    id: str = ""
+    title: str = ""
     connected_accounts: int
     recent_conference_count: int
     notes: list[str]
 
 
 class DeleteResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     deleted: bool
     id_value: str
