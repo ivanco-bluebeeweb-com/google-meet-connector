@@ -100,7 +100,7 @@ async def get_space(ctx, params: SpaceIdParams) -> ActionResult:
     return ActionResult.success(MeetSpace(
         space_name=d.get("name", ""), meeting_uri=d.get("meetingUri", ""),
         meeting_code=d.get("meetingCode", ""), access_type=(d.get("config") or {}).get("accessType", ""),
-    ))
+    ), summary="Space retrieved.")
 
 
 @chat.function(
@@ -174,7 +174,7 @@ async def get_conference_record(ctx, params: ConferenceRecordIdParams) -> Action
         return ActionResult.error(mc.friendly(out))
     d = out["data"]
     return ActionResult.success(ConferenceRecord(conference_record_name=d.get("name", ""), space_name=d.get("space", ""),
-                                                   start_time=d.get("startTime", ""), end_time=d.get("endTime", "")))
+                                                   start_time=d.get("startTime", ""), end_time=d.get("endTime", "")), summary="Conference record retrieved.")
 
 
 @chat.function(
@@ -250,7 +250,7 @@ async def get_recording(ctx, params: RecordingIdParams) -> ActionResult:
         return ActionResult.error(mc.friendly(out))
     d = out["data"]
     return ActionResult.success(Recording(recording_name=d.get("name", ""), state=d.get("state", ""),
-                                            export_uri=(d.get("driveDestination") or {}).get("exportUri", "")))
+                                            export_uri=(d.get("driveDestination") or {}).get("exportUri", "")), summary="Recording retrieved.")
 
 
 @chat.function(
@@ -284,7 +284,7 @@ async def get_transcript(ctx, params: TranscriptIdParams) -> ActionResult:
         return ActionResult.error(mc.friendly(out))
     d = out["data"]
     return ActionResult.success(Transcript(transcript_name=d.get("name", ""), state=d.get("state", ""),
-                                             export_uri=(d.get("docsDestination") or {}).get("exportUri", "")))
+                                             export_uri=(d.get("docsDestination") or {}).get("exportUri", "")), summary="Transcript retrieved.")
 
 
 @chat.function(
@@ -354,7 +354,7 @@ async def get_calendar_meeting(ctx, params: CalendarEventIdParams) -> ActionResu
     return ActionResult.success(CalendarMeeting(
         event_id=d.get("id", ""), summary=d.get("summary", ""), meet_link=meet_link,
         start_time=(d.get("start") or {}).get("dateTime", ""), end_time=(d.get("end") or {}).get("dateTime", ""),
-    ))
+    ), summary="Calendar meeting retrieved.")
 
 
 @chat.function(
