@@ -20,8 +20,7 @@ from app import ext
 
 def _settings_button() -> ui.UINode:
     return ui.Button(
-        "App settings", variant="secondary", size="sm", full_width=True,
-        icon="Settings", on_click=ui.Call("__panel__meet_settings"),
+        "App settings", variant="secondary", size="sm", icon="Settings", on_click=ui.Call("__panel__meet_settings"),
     )
 
 
@@ -31,9 +30,8 @@ async def _oauth_button(ctx, label: str, login_hint: str = "") -> ui.UINode:
     except Exception:
         url = ""
     if url:
-        return ui.Button(label, icon="ExternalLink", full_width=True, on_click=ui.Open(url))
-    return ui.Button("Open connection setup", icon="Settings", full_width=True,
-                      on_click=ui.Call("__panel__meet_settings"))
+        return ui.Button(label, icon="ExternalLink", on_click=ui.Open(url))
+    return ui.Button("Open connection setup", icon="Settings", on_click=ui.Call("__panel__meet_settings"))
 
 
 @ext.panel("meet_sidebar", slot="left", title="Google Meet")
